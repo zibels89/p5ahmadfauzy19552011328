@@ -8,15 +8,49 @@ class TimePage extends StatefulWidget {
 }
 
 class _TimePageState extends State<TimePage> {
+  TimeOfDay _selectedTime = TimeOfDay.now();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: ElevatedButton(
-          onPressed: () {},
-          child: Text('Pilih Jam'),
-        ),
-      ),
+          child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          ElevatedButton(
+            onPressed: () {
+              _getTime(context);
+            },
+            child: Text('Pilih Jam'),
+          ),
+          SizedBox(
+            height: 15,
+          ),
+          Text(
+            'Jam Terpilih:' + _selectedTime.format(context),
+          ),
+        ],
+      )),
     );
+  }
+
+  _getTime(context) async {
+    final _timePick = await showTimePicker(
+        context: context,
+        initialTime: _selectedTime,
+        builder: (context, child) {
+          return MediaQuery(
+            data: MediaQuery.of(context).copyWith(
+              alwaysUse24HourFormat: true,
+            ),
+            child: child!,
+          );
+        });
+
+    if (_timePick != null) {
+      setState(() {
+        _selectedTime = _timePick;
+      });
+    }
   }
 }
